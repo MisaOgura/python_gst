@@ -12,12 +12,12 @@ class Main:
     def __init__(self):
         Gst.init(None)
 
-        self.pipeline = Gst.Pipeline("mypipeline")
+        self.pipeline = Gst.Pipeline('mypipeline')
 
-        self.audiotestsrc = Gst.ElementFactory.make("audiotestsrc", "audio")
+        self.audiotestsrc = Gst.ElementFactory.make('audiotestsrc', 'audio')
         self.pipeline.add(self.audiotestsrc)
 
-        self.sink = Gst.ElementFactory.make("osxaudiosink", "sink")
+        self.sink = Gst.ElementFactory.make('osxaudiosink', 'sink')
 
         print(self.audiotestsrc)
         print(self.sink)
