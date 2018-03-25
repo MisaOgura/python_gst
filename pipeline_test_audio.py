@@ -15,13 +15,10 @@ class Main:
         self.pipeline = Gst.Pipeline('mypipeline')
 
         self.audiotestsrc = Gst.ElementFactory.make('audiotestsrc', 'audio')
+        self.audiotestsrc.set_property('freq', 200)
         self.pipeline.add(self.audiotestsrc)
 
         self.sink = Gst.ElementFactory.make('osxaudiosink', 'sink')
-
-        print(self.audiotestsrc)
-        print(self.sink)
-
         self.pipeline.add(self.sink)
 
         self.audiotestsrc.link(self.sink)
