@@ -23,31 +23,41 @@ class Main:
 
         self.audiotestsrc.link(self.sink)
 
-        window = AudioWindow(pipeline=self.pipeline)
+        window = AudioWindow(
+            pipeline=self.pipeline,
+            audiosrc=self.audiotestsrc
+        )
+
         window.connect('delete-event', Gtk.main_quit)
         window.show_all()
 
 
 class AudioWindow(Gtk.Window):
 
-    def __init__(self, pipeline):
+    def __init__(self, pipeline, audiosrc):
         self.pipeline = pipeline
-        Gtk.Window.__init__(self, title='Test Audio Player')
+        self.audiosrc = audiosrc
 
-        buttons = {
+        Gtk.Window.__init__(self, title='Test Audio Player')
+        self.set_border_width(5)
+
+        btns = {
             'Play': self.on_play,
             'Stop': self.on_stop,
-            'Quit': self.on_quit
+            'Quit': self.on_quit,
+            'Vol up': self.inc_vol,
+            'Vol down': self.dec_vol,
         }
 
-        self.box = Gtk.ButtonBox.new(Gtk.Orientation.HORIZONTAL)
+        self.btn_box = Gtk.ButtonBox.new(Gtk.Orientation.HORIZONTAL)
+        self.btn_box.set_spacing(5)
 
-        for label, callback in buttons.items():
+        for label, callback in btns.items():
             button = Gtk.Button(label=label)
             button.connect('clicked', callback)
-            self.box.add(button)
+            self.btn_box.add(button)
 
-        self.add(self.box)
+        self.add(self.btn_box)
 
     def on_play(self, button):
         print('%s button clicked' % button.get_label())
@@ -61,6 +71,26 @@ class AudioWindow(Gtk.Window):
         print('%s button clicked' % button.get_label())
         Gtk.main_quit()
 
+    def inc_vol(self, button):
+        vol = self.audiosrc.get_property('volume')
+
+        if vol < 1:
+            print('Volume up')
+            vol += .1
+            self.audiosrc.set_property('volume', vol)
+        else:
+            print('Volume is alrady max')
+
+
+    def dec_vol(self, button):
+        vol = self.audiosrc.get_property('volume')
+
+        if vol > .1:
+            print('Volume down')
+            vol -= .1
+            self.audiosrc.set_property('volume', vol)
+        else:
+            print('Volume is alrady min')
 
 start = Main()
 Gtk.main()
